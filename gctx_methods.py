@@ -1,4 +1,5 @@
 import cmap.io.gct as gct
+import copy
 
 def read_gctx(path):
 	'''
@@ -31,7 +32,7 @@ def slice_gctx_column(gcto,col):
 	'''
 	# if an index was passed, grab the appropriate column from the DataFrame
 	if type(col) == int:
-		col = gcto.frame.columns()[col]
+		col = gcto.frame.columns[col]
 
 	# slice the column from the DataFrame an return it
-	return gcto.frame[col]
+	return copy.copy(gcto.frame[col])
