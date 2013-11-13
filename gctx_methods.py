@@ -1,6 +1,7 @@
 import cmap.io.gct as gct
 import copy
 import pandas as pd
+import cmap.util.mongo_utils as mu
 
 def read_gctx(path):
 	'''
@@ -72,4 +73,36 @@ def get_square_frame_from_index(gcto,indices):
  	gcto_frame = copy.copy(gcto.frame)
  	square_frame = gcto_frame[indices].reindex(indices)
  	return square_frame
+
+def graph_from_square_frame(square_frame):
+ 	'''
+ 	generates are networkx graph from the provided square frame.  The nodes in the generated
+ 	graph are named for the columns in the square frame and the edge weights in the graph are the
+ 	average scores in the square_frame for each pairwise
+
+ 	INPUTS
+ 	------
+ 	square_frame: a square pandas DataFrame containing all pairwise conenctions upon which to build
+ 		the graph
+
+ 	OUTPUTS
+ 	-------
+ 	G: the generated networkx graph
+ 	'''
+ 	# first generate the nodes, naming them for the columns in square_frame and attaching metadata
+ 	# from mongo
+ 	CM = mu.CMapMongo(mongo_location=None, collection='pert_info')
+ 	for col in square_frame.columns:
+ 		metadata = CM.find({'pert_id':col})
+ 		G.add_node(col,attr_dict=metadata)
+
+ 	#next generate all of the weighted edges
+ 	for row in square_frame.columns:
+ 		for col in square_frame.columns:
+ 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
+ 			G.add_edge(row,col,weight=weight)
+
+ 	return G
+
+
 	
