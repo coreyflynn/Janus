@@ -1,5 +1,6 @@
 import cmap.io.gct as gct
 import copy
+import pandas as pd
 
 def read_gctx(path):
 	'''
@@ -28,7 +29,7 @@ def slice_gctx_column(gcto,col):
 
 	OUTPUT
 	------
-	frame: a pandas.DataFrame holding the column of data that was sliced
+	series: a pandas.Series holding the column of data that was sliced
 	'''
 	# if an index was passed, grab the appropriate column from the DataFrame
 	if type(col) == int:
@@ -36,3 +37,21 @@ def slice_gctx_column(gcto,col):
 
 	# slice the column from the DataFrame an return it
 	return copy.copy(gcto.frame[col])
+
+def get_index_above_N(series,N=90):
+	'''
+	given an input pandas Series, returns a pandas Series containing all entries
+	above a value of N in the input series
+
+	INPUTS
+	------
+	series: a pandas Series in which to look for values greater than N
+	N: a value cutoff 
+
+	OUTPUTS
+	-------
+	cutoff_index_list = a lit of all the index names with vlaues above N
+	'''
+	cutoff_series = series[series > N]
+	return copy.copy(cutoff_series.index) 
+	
