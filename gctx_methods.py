@@ -1,6 +1,6 @@
 import cmap.io.gct as gct
 import copy
-import pandas as pd
+import math
 import networkx as nx
 import cmap.util.mongo_utils as mu
 
@@ -102,8 +102,9 @@ def graph_from_square_frame(square_frame):
  	#next generate all of the weighted edges
  	for row in square_frame.columns:
  		for col in square_frame.columns:
- 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
- 			G.add_edge(row,col,weight=weight)
+ 			if not math.isnan(square_frame[row][col]) and not math.isnan(square_frame[row][col]):
+	 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
+	 			G.add_edge(row,col,weight=weight)
 
  	return G
 
