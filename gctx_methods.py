@@ -76,7 +76,7 @@ def get_square_frame_from_index(gcto,indices):
  	square_frame = gcto_frame[indices].reindex(indices)
  	return square_frame
 
-def graph_from_square_frame(square_frame):
+def graph_from_square_frame(square_frame,weight_min):
  	'''
  	generates are networkx graph from the provided square frame.  The nodes in the generated
  	graph are named for the columns in the square frame and the edge weights in the graph are the
@@ -86,6 +86,8 @@ def graph_from_square_frame(square_frame):
  	------
  	square_frame: a square pandas DataFrame containing all pairwise conenctions upon which to build
  		the graph
+ 	weight_min: a minimum weight for edges to be included in the graph.  By edfault all edges 
+ 		are included
 
  	OUTPUTS
  	-------
@@ -104,7 +106,11 @@ def graph_from_square_frame(square_frame):
  		for col in square_frame.columns:
  			if not math.isnan(square_frame[row][col]) and not math.isnan(square_frame[row][col]):
 	 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
-	 			G.add_edge(row,col,weight=weight)
+	 			if weight_min is not None:
+	 				if weight >= weight_min:
+			 			G.add_edge(row,col,weight=weight)
+			 	else:
+			 		G.add_edge(row,col,weight=weight)
 
  	return G
 
