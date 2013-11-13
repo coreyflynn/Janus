@@ -53,5 +53,23 @@ def get_index_above_N(series,N=90):
 	cutoff_index_list = a lit of all the index names with vlaues above N
 	'''
 	cutoff_series = series[series > N]
-	return copy.copy(cutoff_series.index) 
+	return copy.copy(cutoff_series.index)
+
+def get_square_frame_from_index(gcto,indices):
+	'''
+	takes a list of indeces and extract the square matrix of data for those indices 
+	from a given gcto object
+
+	INPUTS
+	------
+	gcto: a gct.GCT object from which to extract data
+	indices: a list of named indices to be extracted from gcto 
+
+	OUTPUTS
+	-------
+	square_frame: a pandas.DataFrame holding all pairwise scores for the members of indices
+	'''
+ 	gcto_frame = copy.copy(gcto.frame)
+ 	square_frame = gcto_frame[indices].reindex(indices)
+ 	return square_frame
 	
