@@ -76,7 +76,7 @@ def get_square_frame_from_index(gcto,indices):
  	square_frame = gcto_frame[indices].reindex(indices)
  	return square_frame
 
-def graph_from_square_frame(square_frame,weight_min):
+def graph_from_square_frame(square_frame,weight_min=None):
  	'''
  	generates are networkx graph from the provided square frame.  The nodes in the generated
  	graph are named for the columns in the square frame and the edge weights in the graph are the
@@ -104,8 +104,8 @@ def graph_from_square_frame(square_frame,weight_min):
  	#next generate all of the weighted edges
  	for row in square_frame.columns:
  		for col in square_frame.columns:
- 			if not math.isnan(square_frame[row][col]) and not math.isnan(square_frame[row][col]):
-	 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
+ 			if not math.isnan(square_frame[row][col]) and not math.isnan(square_frame[col][row]):
+	 			weight = (square_frame[row][col] + square_frame[col][row]) / 2.0
 	 			if weight_min is not None:
 	 				if weight >= weight_min:
 			 			G.add_edge(row,col,weight=100 - weight)
