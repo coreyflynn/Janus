@@ -38,7 +38,8 @@ def slice_gctx_column(gcto,col):
 		col = gcto.frame.columns[col]
 
 	# slice the column from the DataFrame an return it
-	return copy.copy(gcto.frame[col])
+	series = copy.copy(gcto.frame[col])
+	return series.dropna()
 
 def get_index_above_N(series,N=90):
 	'''
@@ -95,7 +96,7 @@ def graph_from_square_frame(square_frame):
  	CM = mu.CMapMongo(mongo_location=None, collection='pert_info')
  	G = nx.Graph()
  	for col in square_frame.columns:
- 		metadata = CM.find({'pert_id':col})
+ 		metadata = CM.find({'pert_id':col})[0]
  		G.add_node(col,attr_dict=metadata)
 
  	#next generate all of the weighted edges
