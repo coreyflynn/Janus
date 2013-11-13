@@ -1,6 +1,7 @@
 import cmap.io.gct as gct
 import copy
 import pandas as pd
+import networkx as nx
 import cmap.util.mongo_utils as mu
 
 def read_gctx(path):
@@ -92,6 +93,7 @@ def graph_from_square_frame(square_frame):
  	# first generate the nodes, naming them for the columns in square_frame and attaching metadata
  	# from mongo
  	CM = mu.CMapMongo(mongo_location=None, collection='pert_info')
+ 	G = nx.Graph()
  	for col in square_frame.columns:
  		metadata = CM.find({'pert_id':col})
  		G.add_node(col,attr_dict=metadata)
