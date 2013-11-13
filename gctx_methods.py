@@ -108,9 +108,9 @@ def graph_from_square_frame(square_frame,weight_min):
 	 			weight = (square_frame[row][col] + square_frame[row][col]) / 2.0
 	 			if weight_min is not None:
 	 				if weight >= weight_min:
-			 			G.add_edge(row,col,weight=weight)
+			 			G.add_edge(row,col,weight=100 - weight)
 			 	else:
-			 		G.add_edge(row,col,weight=weight)
+			 		G.add_edge(row,col,weight=100 - weight)
 
  	return G
 
