@@ -178,7 +178,7 @@ def pruned_graph_at_weight(G,weight):
 	#return the pruned graph
 	return pruned_G
 
-def get_connected_components_and_distances_ratios_from_subgraph(G,Gsub):
+def get_connected_components_and_distances_ratios_from_subgraph(G,Gsub,min_size=4):
 	'''
 	returns the connected components in the subgraph given and their average 
 	distance ratios of insternal distances to external distances.  This requires
@@ -189,6 +189,8 @@ def get_connected_components_and_distances_ratios_from_subgraph(G,Gsub):
 	G: a full networkx graph
 	Gsub: a subgraph of G containing only the nodes and edges to be used for
 		connected component analysis
+	min_size: the minimum size of a connected component to be considered as a
+		real component. defaults to 4
 
 	OUTPUTS
 	-------
@@ -201,6 +203,7 @@ def get_connected_components_and_distances_ratios_from_subgraph(G,Gsub):
 
 	# find connected components in the subgraph
 	concomp = nx.connected_components(Gsub)
+	concomp = [x for x in concomp if len(x) >= min_size]
 
 	# for each connected component, find the internal distance, external distance, and compute
 	# their ratio
