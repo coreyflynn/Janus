@@ -150,7 +150,7 @@ def graph_from_gctx_column(gcto,col,N=90,min_weight=None):
 	G = graph_from_square_frame(sq)
 	return G
 
-def pruned_graph_at_wieght(G,weight):
+def pruned_graph_at_weight(G,weight):
 	'''
 	prune the input graph to contain only nodes that have an edges of the specified
 	weight or below.
