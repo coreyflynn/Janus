@@ -114,5 +114,40 @@ def graph_from_square_frame(square_frame,weight_min=None):
 
  	return G
 
+def graph_from_gctx_column(gcto,col,N=90,min_weight=None):
+ 	'''
+	slices the given column out of the the gct object supplied in gct and creates
+	a graph from the members of that column that have a score above N.  The input 
+	gct is assumed to be a square matrix of data an annotations that can be mined
+	for the construction of the graph.  All edges in the graph are preserved unless
+	min_weight is given in which case only those edges in the adjacency matrix with
+	a weight over min_weight.  Weights are taken to be the average score between two
+	nodes in the adjacency matrix. 
+
+	INPUTS
+	------
+	gcto: a gct.GCT() object to be sliced
+	col: the column to be sliced out, either as an index or as a named column
+	N: a value cutoff
+	weight_min: a minimum weight for edges to be included in the graph.  By edfault all edges 
+ 		are included
+
+	OUTPUT
+	------
+	G: the generated networkx graph
+	'''
+	#slice out the desired column
+	col_data = slice_gctx_column(gcto,col)
+
+	# get the indices of the entries in the column scoring over threshold
+	indices = gm.get_index_above_N(col_data,N)
+
+	# construct an adjacency matrix from those indices
+	sq = gm.get_square_frame_from_index(gcto,indices)
+
+	# build the graph and return it
+	G = gm.graph_from_square_frame(sq)
+	return G
+
 
 	
