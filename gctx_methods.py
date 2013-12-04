@@ -2,6 +2,7 @@ import cmap.io.gct as gct
 import copy
 import math
 import networkx as nx
+import numpy as np
 import cmap.util.mongo_utils as mu
 
 def read_gctx(path):
@@ -149,5 +150,80 @@ def graph_from_gctx_column(gcto,col,N=90,min_weight=None):
 	G = graph_from_square_frame(sq)
 	return G
 
+def pruned_graph_at_wieght(G,weight):
+	'''
+	prune the input graph to contain only nodes that have an edges of the specified
+	weight or below.
 
-	
+	INPUTS
+	------
+	G: a networkx graph to be pruned
+	weight: the weight below which to trim edges
+
+	OUTPUT
+	------
+	pruned_G: the pruned networkx graph
+	'''
+	# make a copy of the input graph
+	pruned_G = G.copy()
+
+	# prune the edges that fall above the weight cutoff
+	pruned_G.remove_edges_from([x for x in pruned_G.edges(data=True) if x[2]['weight'] > weight])
+
+	# prune nodes that have no edges
+	for node in pruned_G.nodes():
+	    if len(pruned_G.edges(node)) == 1:
+	        pruned_G.remove_node(node)
+
+	#return the pruned graph
+	return pruned_G
+
+def get_connected_components_and_distances_ratios_from_subgraph(G,Gsub):
+	'''
+	returns the connected components in the subgraph given and their average 
+	distance ratios of insternal distances to external distances.  This requires
+	that the full graph is specified as well as the subgraph to be computed on.
+
+	INPUTS
+	------
+	G: a full networkx graph
+	Gsub: a subgraph of G containing only the nodes and edges to be used for
+		connected component analysis
+
+	OUTPUTS
+	-------
+	connected_components: a list of all the connected components in the graph
+	distance_ratios: a list of all teh distance ratios for the connected_components
+	average_distance_ratio: the average distance ratio across all components
+	'''
+	# compute the all pairs distance for the full graph
+	all_dist = nx.all_pairs_dijkstra_path_length(G)
+
+	# find connected components in the subgraph
+	concomp = nx.connected_components(Gsub)
+
+	# for each connected component, find the internal distance, external distance, and compute
+	# their ratio
+	ratios = []
+	for c in concomp:
+		internal_distances = []
+		external_distances = []
+		
+		# internal_distances
+		for i in c:
+			for j in c:
+				if i != j:
+					internal_distances.append(all_dist[i][j])
+
+		# external_distances
+		non_c = list(set(G.nodes()).difference(set(c)))
+		for i in c:
+			for j in non_c:
+				external_distances.append(all_dist[i][j])
+
+		#ratio
+		ratios.append(np.mean(internal_distances) / np.mean(external_distances))
+
+	# return the results
+	average_ratio = np.mean(ratios)
+	return concomp, ratios, average_ratio
