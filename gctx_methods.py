@@ -140,13 +140,13 @@ def graph_from_gctx_column(gcto,col,N=90,min_weight=None):
 	col_data = slice_gctx_column(gcto,col)
 
 	# get the indices of the entries in the column scoring over threshold
-	indices = gm.get_index_above_N(col_data,N)
+	indices = get_index_above_N(col_data,N)
 
 	# construct an adjacency matrix from those indices
-	sq = gm.get_square_frame_from_index(gcto,indices)
+	sq = get_square_frame_from_index(gcto,indices)
 
 	# build the graph and return it
-	G = gm.graph_from_square_frame(sq)
+	G = graph_from_square_frame(sq)
 	return G
 
 
